@@ -1,12 +1,13 @@
 import os
 from langchain.document_loaders import YoutubeLoader
-
+from dotenv import load_dotenv
+load_dotenv()
 
 import streamlit 
 from langchain import OpenAI
-from apikey import apikey
-# import openai
 
+# import openai
+api_key = os.environ.get('API_KEY')
 
 from langchain.chains import RetrievalQA
 from langchain.vectorstores import FAISS
@@ -15,7 +16,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-os.environ['OPENAI_API_KEY']=apikey
+os.environ['OPENAI_API_KEY']=api_key
 streamlit.title('TubeGPT')
 
 url=streamlit.text_input('Video URL')
