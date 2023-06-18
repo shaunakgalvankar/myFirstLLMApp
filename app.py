@@ -1,21 +1,53 @@
 import os
-from apikey import apikey
-from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api.formatters import JSONFormatter
+from langchain.document_loaders import YoutubeLoader
+
 
 import streamlit 
 from langchain import OpenAI
+from apikey import apikey
 # import openai
+
+
+from langchain.chains import RetrievalQA
+from langchain.vectorstores import FAISS
+from langchain.chat_models import ChatOpenAI
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 
 os.environ['OPENAI_API_KEY']=apikey
 
-videoID='h9xaHwBsRUw'
-transcript=YouTubeTranscriptApi.get_transcript(videoID)
 
-formatter=JSONFormatter()
-text_formatted=formatter.format_transcript(transcript)
+loader = YoutubeLoader.from_youtube_url(
+    "https://www.youtube.com/watch?v=Cm_uIxcczWM&ab_channel=CaseyNeistat", add_video_info=True
+)
 
-print(text_formatted)
+docs=loader.load()
+transcribedText=docs[0].page_content
+text=transcribedText
+print(transcribedText)
+
+# Split them
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=150)
+splits = text_splitter.split_text(text)
+
+# Build an index
+embeddings = OpenAIEmbeddings()
+vectordb = FAISS.from_texts(splits, embeddings)
+
+# Build a QA chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0),
+    chain_type="stuff",
+    retriever=vectordb.as_retriever(),
+)
+
+streamlit.title('Youtube Video App')
+prompt=streamlit.text_input('Your Query')
+# Ask a question!
+query = "what are the tips mentioned?"
+answer=qa_chain.run(query)
+print(answer)
 
 # def ask_question(prompt, context):
 #     response = openai.Completion.create(
@@ -29,8 +61,7 @@ print(text_formatted)
 #     )
 #     return response.choices[0].text.strip()
 
-streamlit.title('Youtube Video App')
-prompt=streamlit.text_input('Your prompt')
+
 
 llm=OpenAI(temperature=0.9)
 if prompt:
