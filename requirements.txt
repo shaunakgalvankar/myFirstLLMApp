@@ -143,7 +143,6 @@ SQLAlchemy==2.0.16
 starlette==0.27.0
 streamlit==1.23.1
 sympy==1.12
-syncer==2.0.3
 TBB==0.2
 tenacity==8.2.2
 tensorflow-hub==0.13.0
