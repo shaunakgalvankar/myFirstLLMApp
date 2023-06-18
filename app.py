@@ -16,6 +16,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 os.environ['OPENAI_API_KEY']=apikey
+streamlit.title('TubeGPT')
 
 url=streamlit.text_input('Video URL')
 if url:
@@ -43,7 +44,7 @@ if url:
         retriever=vectordb.as_retriever(),
     )
 
-    streamlit.title('Youtube Video App')
+    
     query=streamlit.text_input('Your Query')
     # Ask a question!
     if query:
