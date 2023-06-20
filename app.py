@@ -44,7 +44,7 @@ if url:
         retriever=vectordb.as_retriever(),
     )
     description=qa_chain.run("Summarize this")
-    streamlit.write(description)
+    streamlit.write("Summary:"+ description)
     
     query=streamlit.text_input('Your Query')
     # Ask a question!
