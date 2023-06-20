@@ -43,7 +43,8 @@ if url:
         chain_type="stuff",
         retriever=vectordb.as_retriever(),
     )
-
+    description=qa_chain.run("Summarize this")
+    streamlit.write(description)
     
     query=streamlit.text_input('Your Query')
     # Ask a question!
