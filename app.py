@@ -4,7 +4,7 @@ from langchain.document_loaders import YoutubeLoader
 
 import streamlit 
 from langchain import OpenAI
-from apikey import apikey
+
 # import openai
 
 
